@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[3],{0:function(n,o,c){"use strict";function t(n){console.log(n)}c.d(o,"a",function(){return t})},8:function(n,o,c){"use strict";c.r(o);c(9),c(1);var t=c(0);Object(t.a)("index")},9:function(n,o,c){}},[[8,1,0]]]);

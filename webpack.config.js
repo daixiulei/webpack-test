@@ -67,6 +67,20 @@ module.exports = {
                 "css-loader",
                 "less-loader"
             ]
+        },{
+            test:/\.js$/,
+            use:["babel-loader"],
+            exclude:/node_modules/,
+            include:path.resolve(__dirname,"./src"),
+        }, {
+            test:/\.(png|jpg|jpeg|gif)$/,
+            use:{
+                loader:["url-loader"],
+                options:{
+                    limit:8124,
+                    output:"images"
+                }
+            }
         }]
     },
     plugins: [
@@ -78,7 +92,6 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename:"css/[name]-[hash:5].css",//相对于output里的path的路径，不会重新计算路径
             chunkFilename:"[id].css",
-            chunks:["[name]","styles"]
         }),
         //提取公共模块   4.0已移除
         // new webpack.optimize.CommonsChunkPlugin({
@@ -87,9 +100,9 @@ module.exports = {
         //
     ],
     optimization:{
-        runtimeChunk:{
-            name:"manifest"
-        },
+        // runtimeChunk:{
+        //     name:"manifest"
+        // },
         //压缩js和css
         minimizer:[
             new UglifyJsPlugin({
@@ -101,7 +114,6 @@ module.exports = {
             new OptimizeCssAssetsPlugin({})
         ],
         splitChunks:{
-            chunks:"all",
             cacheGroups:{
                 vendor:{
                     name:"vendor",
@@ -115,13 +127,14 @@ module.exports = {
                 //     chunks:"initial",
                 //     test:/[\\/]node_modules[\\/](.*)\.css$/
                 // }
-                styles: {
-                    name: 'styles',
-                    test: /\.css$/,
-                    chunks: 'all',
-                    minChunks: 2,
-                    enforce: true
-                  }
+                // styles: {
+                //     name: 'styles',
+                //     filename:"[name]-[hash:5].css",
+                //     test: /\.css$/,
+                //     chunks: 'all',
+                //     // minChunks: 2,
+                //     // enforce: true
+                //   }
             }
         }
     }
