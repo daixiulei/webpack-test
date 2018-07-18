@@ -3,9 +3,14 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const fs = require("fs")
 const CleanWebpackPlugin = require("clean-webpack-plugin");
-const ExtractTextWebpackPlugin = require("extract-text-webpack-plugin");
+//extract-text-webpack-plugin暂时不支持
+// const ExtractTextWebpackPlugin = require("extract-text-webpack-plugin");
 //webpack4.0采用mini-css-extract-plugin打包压缩css
 const MiniCssExtractPlugin=require("mini-css-extract-plugin");
+
+//压缩js和css
+const UglifyJsPlugin=require("uglifyjs-webpack-plugin");
+const OptimizeCssAssetsPlugin=require("optimize-css-assets-webpack-plugin");
 
 //获取template的列表，动态配置htmlWebpackPlugin
 const templatePath = "./src/template";
@@ -39,14 +44,15 @@ const htmlPlugins = templateList.map((item, index) => {
 module.exports = {
     entry: Entries,
     output: {
-        filename: "[name]-[hash:5].bundle.js",
-        path: path.resolve(__dirname, "./dist/static/js")
+        filename: "js/[name]-[hash:5].bundle.js",
+        path: path.resolve(__dirname, "./dist/static/"),
+        chunkFilename:"js/[name].bundle.js"
     },
     module: {
         rules: [{
             test: /\.css$/,
             use:[
-                "style-loader",
+                MiniCssExtractPlugin.loader,
                 "css-loader",
             ]
             //extract-text-webpack-plugin暂时还不支持webpack4.0
@@ -57,7 +63,7 @@ module.exports = {
         }, {
             test: /\.less$/,
             use: [
-                "style-loader",
+                MiniCssExtractPlugin.loader,
                 "css-loader",
                 "less-loader"
             ]
@@ -69,5 +75,54 @@ module.exports = {
         ...htmlPlugins,
         //提取css
         // new ExtractTextWebpackPlugin("./dist/main.css")
-    ]
+        new MiniCssExtractPlugin({
+            filename:"css/[name]-[hash:5].css",//相对于output里的path的路径，不会重新计算路径
+            chunkFilename:"[id].css",
+            chunks:["[name]","styles"]
+        }),
+        //提取公共模块   4.0已移除
+        // new webpack.optimize.CommonsChunkPlugin({
+        //     name:"common"
+        // })
+        //
+    ],
+    optimization:{
+        runtimeChunk:{
+            name:"manifest"
+        },
+        //压缩js和css
+        minimizer:[
+            new UglifyJsPlugin({
+                cache:true,
+                parallel:true,
+                sourceMap:true,
+                // beautify:false,//格式化代码
+            }),
+            new OptimizeCssAssetsPlugin({})
+        ],
+        splitChunks:{
+            chunks:"all",
+            cacheGroups:{
+                vendor:{
+                    name:"vendor",
+                    chunks:"initial",
+                    // filename:"js/[name].js",
+                    test:/[\\/]node_modules[\\/](.*)\.js$/,//只打包node_modules下的模块
+                },
+                //合并css，暂时不合并
+                // styles:{
+                //     name:"styles",
+                //     chunks:"initial",
+                //     test:/[\\/]node_modules[\\/](.*)\.css$/
+                // }
+                styles: {
+                    name: 'styles',
+                    test: /\.css$/,
+                    chunks: 'all',
+                    minChunks: 2,
+                    enforce: true
+                  }
+            }
+        }
+    }
 }

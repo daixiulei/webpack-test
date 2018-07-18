@@ -1,2 +1,6 @@
 import "../styles/index.css";
-alert("hello")
+import _ from"lodash";
+import {show} from "../utils";
+import "antd/dist/antd.css";
+
+show("index")
