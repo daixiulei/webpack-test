@@ -1,4 +1,4 @@
-a{color:#ff0}div{color:#00f}
+a{color:#ff0;display:block;height:100px;width:100px}@font-face{font-family:test;src:url(font/test.d41d8cd98f00b204e9800998ecf8427e.ttf)}div{color:#00f}
 /*!
  * 
  * antd v3.7.0

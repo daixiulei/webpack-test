@@ -73,14 +73,29 @@ module.exports = {
             exclude:/node_modules/,
             include:path.resolve(__dirname,"./src"),
         }, {
-            test:/\.(png|jpg|jpeg|gif)$/,
-            use:{
-                loader:["url-loader"],
-                options:{
-                    limit:8124,
-                    output:"images"
-                }
-            }
+            test:/\.(png|jpg|jpeg|gif|svg)$/,
+            use:"url-loader?limit=8192&name=images/[name].[hash].[ext]"
+            // use:[{
+            //     loader:["url-loader"],
+            //     options:{
+            //         limit:8192,
+            //         // output:"images",
+            //         name:"images/[name].[hash].[ext]"
+            //     }
+            // }]
+        },{
+            test:/\.html$/,
+            use:"html-withimg-loader?limit=8192&name=mages/[name].[hash].[ext]"
+        },{
+            test:/\.(woff|eot|ttf)$/,
+            use:"file-loader?limit=8192&name=font/[name].[hash].[ext]"
+            // use:[{
+            //     loader:["url-loader"],
+            //     options:{
+            //         limit:8192,
+            //         name:"font/[name].[hash].[ext]"
+            //     }
+            // }]
         }]
     },
     plugins: [
@@ -136,6 +151,14 @@ module.exports = {
                 //     // enforce: true
                 //   }
             }
+        }
+    },
+    performance:{
+        hints:"warning",//打包出来的文件超出250kb会报出警告，默认warning，设为false将忽略警告，设为error将中断程序
+        maxEntrypointSize:500000,//入口文件体积上限，默认250000
+        maxAssetSize:500000,//打包出来的文件体积上限，默认250000
+        assetFilter:function(assetFilename){//控制报警文件的格式
+            return assetFilename.endsWith(".css")
         }
     }
 }

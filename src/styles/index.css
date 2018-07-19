@@ -1,3 +1,11 @@
 a{
     color:#ff0;
+    display: block;
+    height:100px;
+    width:100px;
+    /* background:url("../images/o_blog-banner.jpg"); */
+}
+@font-face{
+    font-family: "test";
+    src:url("../fonts/test.ttf")
 }
