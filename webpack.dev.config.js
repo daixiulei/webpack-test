@@ -16,7 +16,7 @@ const Entries = {}
 const htmlPlugins = templateList.map((item, index) => {
     Entries[item] = path.resolve(__dirname, `./src/entry/${item}.js`)
     return new HtmlWebpackPlugin({
-        filename: path.resolve(__dirname, `./dist/${item}.html`),
+        filename: path.resolve(__dirname, `./dev/${item}.html`),
         template: path.resolve(__dirname, `./src/template/${item}.html`),
         chunks: [item, "vendor"],
         inject: 'body',//指定js插入的位置，默认body，head插入head内，true插入body下面，false则不插入
@@ -34,8 +34,8 @@ const htmlPlugins = templateList.map((item, index) => {
 module.exports={
     entry:Entries,
     output: {
-        filename: "js/[name]-[hash:5].bundle.js",
-        path: path.resolve(__dirname, "./webpack-test/"),
+        filename: "dev/js/[name].bundle.js",
+        path: path.resolve(__dirname, "dev"),
     },
     devtool:"source-map",
     module: {
@@ -90,6 +90,7 @@ module.exports={
     },
     devServer:{
         port:8888,
+        contentBase:path.resolve(__dirname,"/"),
         compress:true,//gzip压缩
         inline:true,//默认构建信息添加到控制台
         hot:true,
@@ -100,7 +101,7 @@ module.exports={
         //提取css
         // new ExtractTextWebpackPlugin("./dist/main.css")
         new MiniCssExtractPlugin({
-            filename:"css/[name]-[hash:5].css",//相对于output里的path的路径，不会重新计算路径
+            filename:"dev/css/[name].css",//相对于output里的path的路径，不会重新计算路径
             chunkFilename:"[id].css",
         }),
     ]
